@@ -1,7 +1,7 @@
 import React from "react";
 import ConversationList from "./ConversationList";
 import LanguageSelector from "./LanguageSelector";
-// import { getResponseFromAI,  aiModerationCheck} from "./openaiService";
+import { getResponseFromAI,  aiModerationCheck} from "./openaiService";
 
 function Form() {
     const [key, setKey] = React.useState(1);
