@@ -12,6 +12,8 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "modern-normalize": "^3.0.1",
+    "openai": "^4.82.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
