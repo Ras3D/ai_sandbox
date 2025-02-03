@@ -37,7 +37,7 @@ function Form() {
     }
 
     async function getResponse(userText, language) {
-        const responseText = await getResponseFromAI(userText, language);
+        let responseText = await getResponseFromAI(userText, language);
         const moderation = await aiModerationCheck(responseText)
         if(moderation){
             const keys = Object.keys(moderation);
