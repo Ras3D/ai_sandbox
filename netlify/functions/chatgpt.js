@@ -16,6 +16,7 @@ exports.handler = async (event) => {
     const API_KEY = process.env.VITE_OPENAI_API_KEY;
 
     try {
+        console.log("chatgpt.js")
         const body = JSON.parse(event.body);
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",

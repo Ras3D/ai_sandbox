@@ -33,6 +33,7 @@ export async function getResponseFromAI(userText, language) {
     ];
     
     try {
+        console.log("openaiService.js")
         const response = await openai.chat.completions.create({
             model: "gpt-4",
             messages: messages,
