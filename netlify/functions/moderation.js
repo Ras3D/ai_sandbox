@@ -6,7 +6,7 @@ exports.handler = async (event) => {
         };
     }
 
-    const API_KEY = process.env.OPENAI_API_KEY; // Securely stored in Netlify
+    const API_KEY = process.env.VITE_OPENAI_API_KEY; // Securely stored in Netlify
     if (!API_KEY) {
         return {
             statusCode: 500,
