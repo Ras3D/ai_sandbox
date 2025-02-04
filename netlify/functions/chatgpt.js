@@ -1,11 +1,4 @@
 exports.handler = async (event) => {
-    if (event.httpMethod === "GET") {
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ message: "API is running. Use POST requests to interact." }),
-        };
-    }
-
     if (event.httpMethod !== "POST") {
         return {
             statusCode: 405,
@@ -14,10 +7,16 @@ exports.handler = async (event) => {
     }
 
     const API_KEY = process.env.VITE_OPENAI_API_KEY;
+    if (!API_KEY) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: "Missing OpenAI API Key" }),
+        };
+    }
 
     try {
-        console.log("chatgpt.js")
         const body = JSON.parse(event.body);
+
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -25,8 +24,10 @@ exports.handler = async (event) => {
                 "Authorization": `Bearer ${API_KEY}`,
             },
             body: JSON.stringify({
-                model: "gpt-3.5-turbo",
+                model: "gpt-4",
                 messages: body.messages,
+                temperature: 1,
+                max_tokens: 256
             }),
         });
 
@@ -38,7 +39,7 @@ exports.handler = async (event) => {
     } catch (error) {
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: "Something went wrong" }),
+            body: JSON.stringify({ error: "Error processing request" }),
         };
     }
 };

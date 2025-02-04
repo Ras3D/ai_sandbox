@@ -1,17 +1,25 @@
 import OpenAI from "openai";
 
-
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const sendMessage = async (messages) => {
-    const response = await fetch(`${BACKEND_URL}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages }),
-    });
+    try {
+        const response = await fetch(`${BACKEND_URL}/chatgpt`, { // ✅ Now calls the chatgpt function
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ messages }),
+        });
 
-    const data = await response.json();
-    return data;
+        if (!response.ok) {
+            throw new Error(`API Error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data.choices[0].message.content; // Return the AI response
+    } catch (error) {
+        console.error("Error fetching response from Netlify function:", error);
+        return "Error retrieving response.";
+    }
 };
 
 const openai = new OpenAI({
@@ -32,22 +40,8 @@ export async function getResponseFromAI(userText, language) {
         }
     ];
     
-    try {
-        console.log("openaiService.js")
-        const response = await openai.chat.completions.create({
-            model: "gpt-4",
-            messages: messages,
-            temperature: 1,
-            presence_penalty: 0,
-            frequency_penalty: 0,
-            max_tokens: 256
-        });
-        return response.choices[0].message.content;
-    } catch (error) {
-        console.error("Error fetching response:", error);
-        return "Error retrieving response.";
-    }
-}
+    return await sendMessage(messages);
+};
 
 export async function aiModerationCheck(text) {
     try {
@@ -69,12 +63,5 @@ export async function aiModerationCheck(text) {
         console.error("Error during moderation check:", error);
         return null;
     }
-}
-
-    
-function renderWarning(obj) {
-    const keys = Object.keys(obj);
-    const filtered = keys.filter((key) => obj[key]);
-    document.body.innerText = `Your text been flagged for the following reasons: ${filtered.join(", ")}.`
 }
 
