@@ -1,12 +1,24 @@
 import OpenAI from "openai";
 
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+const sendMessage = async (messages) => {
+    const response = await fetch(`${BACKEND_URL}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages }),
+    });
+
+    const data = await response.json();
+    return data;
+};
+
 const openai = new OpenAI({
-    //apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-    apiKey: process.env.VITE_OPENAI_API_KEY,
+    apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+    // apiKey: process.env.VITE_OPENAI_API_KEY,
     dangerouslyAllowBrowser: true
 });
-
-
 
 export async function getResponseFromAI(userText, language) {
     const messages = [
@@ -37,18 +49,27 @@ export async function getResponseFromAI(userText, language) {
 }
 
 export async function aiModerationCheck(text) {
-    // Relevant for both inputs and outputs
-    const completion = await openai.moderations.create({
-        input: text
-    });
-    const {flagged, categories} = completion.results[0];
-    // console.log("flagged", flagged);
-    // console.log("categories", categories);
-    
-    if (flagged) {
-        return categories
+    try {
+        const response = await fetch(`${BACKEND_URL}/moderation`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ input: text }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Moderation API Error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        const { flagged, categories } = data.results[0];
+
+        return flagged ? categories : null;
+    } catch (error) {
+        console.error("Error during moderation check:", error);
+        return null;
     }
 }
+
     
 function renderWarning(obj) {
     const keys = Object.keys(obj);
