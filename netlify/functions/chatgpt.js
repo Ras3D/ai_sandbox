@@ -6,7 +6,8 @@ exports.handler = async (event) => {
         };
     }
 
-    const API_KEY = process.env.VITE_OPENAI_API_KEY;
+    const API_KEY = process.env.VITE_OPENAI_API_KEY;//netlify
+    // const API_KEY = import.meta.VITE_OPENAI_API_KEY;//local dev
     if (!API_KEY) {
         return {
             statusCode: 500,

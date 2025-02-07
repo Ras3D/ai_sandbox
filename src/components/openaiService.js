@@ -23,8 +23,8 @@ const sendMessage = async (messages) => {
 };
 
 const openai = new OpenAI({
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-    // apiKey: process.env.VITE_OPENAI_API_KEY,
+    apiKey: import.meta.env.VITE_OPENAI_API_KEY,//localdwv
+    // apiKey: process.env.VITE_OPENAI_API_KEY,//netlify
     dangerouslyAllowBrowser: true
 });
 

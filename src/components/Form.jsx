@@ -10,6 +10,15 @@ function Form() {
 
     const [defaultLanguage, setDefaultLanguage] = React.useState("Spanish")
 
+    const promptResponseContainer = React.useRef(null)
+    console.log(promptResponseContainer)
+    
+    React.useEffect(() => {
+        if (conversationStateArr.length > 0 && promptResponseContainer.current !== null) {
+            promptResponseContainer.current.scrollIntoView({behavior: "smooth"})            
+        }
+    },[conversationStateArr])
+
     const onOptionChange = e => {
         setDefaultLanguage(e.target.value)
     }
@@ -66,7 +75,7 @@ function Form() {
                 <button className="myButton">Translate</button>
             </form>
             {warningMessage ? <div className="styleWarningMessage">{warningMessage}</div>:null}
-            {conversationStateArr.length > 0 ?<ConversationList conversationStateArr={conversationStateArr} />:null}
+            {conversationStateArr.length > 0 ?<ConversationList conversationStateArr={conversationStateArr} promptResponseContainerRef={promptResponseContainer}/>:null}
         </section>
     );
 }
